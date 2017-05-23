@@ -1,0 +1,7 @@
+{
+  "name": "aniBoard",
+  "description": "A barebones Node.js app using Express 4 and io",
+  "repository": "https://github.com/gbachik/aniBoard",
+  "keywords": ["node", "express", "heroku", "abrownbag", "twitch"],
+  "image": "heroku/nodejs"
+}
