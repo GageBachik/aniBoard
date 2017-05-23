@@ -1,0 +1,709 @@
+<!doctype html>
+<html>
+	<head>
+		<title>aniBoard</title>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<style>
+
+			@font-face {
+				font-family: neon;
+				src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/707108/neon.ttf);
+			}
+
+			body{
+				/*background-color: #444;*/
+			}
+
+/*			#animSeventeenCont{
+				display: block !important;
+			}
+
+			#animSeventeenCont .subBallsDrop{
+				display: block !important;
+			}*/
+
+			#subBalls{
+				margin:0 auto;
+				display:block;
+				filter:url('#shadowed-goo');
+			}
+
+			svg{
+				display:none;
+			}
+
+			.subBallsDrop{
+				display:none;
+			}
+
+			.flux {
+				font-family: neon;
+				color: #426DFB;
+				font-size: 9vw;
+				line-height: 9vw;
+				text-shadow: 0vw 0vw 3vw #2356FF;
+				position: relative;
+				bottom: 57%;
+				text-align: center;
+			}
+
+			.flux {
+				animation: flux 1s ease infinite;
+			}
+
+			@keyframes flux {
+				0%,
+				100% {
+					text-shadow: 0vw 0vw 1vw #1041FF, 0vw 0vw 3vw #1041FF, 0vw 0vw 10vw #1041FF, 0vw 0vw 10vw #1041FF, 0vw 0vw .4vw #8BFDFE, .5vw .5vw .1vw #147280;
+					color: #28D7FE;
+				}
+				50% {
+					text-shadow: 0vw 0vw .5vw #082180, 0vw 0vw 1.5vw #082180, 0vw 0vw 5vw #082180, 0vw 0vw 5vw #082180, 0vw 0vw .2vw #082180, .5vw .5vw .1vw #0A3940;
+					color: #146C80;
+				}
+			}
+
+			body{
+				margin: 0 0;
+				overflow: hidden;
+			}
+			#animOneCont{
+				position: absolute;
+			}
+			/*#animOneCont,*/ #animTwoCont, #animThreeCont, #animFourCont, #animFiveCont, #animSixCont, #animNineCont, #animTenCont, #animElevenCont, #animTwelveCont, #animThirteenCont, #animFourteenCont, #animFifteenCont, #animSixteenCont, #animSeventeenCont {
+				display: none;
+				position: absolute;
+			}
+			#introVidSource{
+				width: 1280px;
+				height: 720px;
+			}
+			video{
+				width: 100%;
+			}
+			#animOneCont, #animTwoCont, #animThreeCont, #animFourCont, #animSixCont, #animNineCont, #animTenCont, #animElevenCont, #animTwelveCont, #animThirteenCont, #animFourteenCont{
+				width: 350px;
+				top: 442px;
+				left: 18px;
+			}
+			#animFifteenCont{
+				display: none;
+				width: 1280px;
+				height: 720px;
+			}
+			#animSeventeenCont{
+				width: 100%;
+			}
+			@-webkit-keyframes cheesecake {
+				from {
+					-webkit-transform: rotatey(0deg);
+				}
+				to {
+					-webkit-transform: rotatey(1440deg);
+				}
+			}
+			#animFifteenCont #cheesecake #CakeCont img{
+				width: 32px;
+				margin-right: 123px;
+				-webkit-animation-name: cheesecake;
+				-webkit-animation-duration: 5s;
+				-webkit-animation-iteration-count: infinite;
+				-webkit-animation-timing-function: linear;
+			}
+			#CakeCont{
+				margin-bottom: 83px;
+			}
+			#DanceCont img {
+				width: 100px;
+				margin-right: 110px;
+			}
+			#reqBy{
+				display: none;
+				color: #f1f1f1;
+				position: absolute;
+				top: 410px;
+				left: 18px;
+				width: 350px;
+				font-weight: bolder;
+			}
+			#name{
+				text-align: center;
+				font-family: 'Open-Sans', sans-serif;
+				font-size: 12px;
+			}
+			#from{
+				font-size: 14px;
+			}
+			#animSixteenCont{
+				display: none;
+				width: 1280px;
+				height: 720px;
+				/*background: linear-gradient(#000, #151515);*/
+			}
+			#animSixteenCont canvas {
+				width: 100%;
+				height: 100%;
+			}
+
+			.subSpam, .subName {
+				position: absolute;
+				top: 0;
+				left: 50%;
+				width: 600px;
+				height: 100px;
+				margin: 100px auto;
+				perspective: 1000px;
+				perspective-origin: 50% -200px;
+			}
+			.subSpam{
+				display: none;
+			}
+			h1 {
+				position: relative;
+				left: -50%;
+				text-align: center;
+				text-transform: uppercase;
+				font-size: 4em;
+				letter-spacing: 0.1em;
+				color: #EEE;
+				animation: rotate 2s ease-in-out alternate infinite;
+			}
+			h1:before {
+				content: attr(data-shadow);
+				color: transparent;
+				text-shadow: 0 0 15px #111;
+				position: absolute;
+				z-index: -1;
+				margin: -0.1em 0 0 0;
+				animation: skew 2s ease-in-out alternate infinite;
+				transform-origin: bottom;
+			}
+			@keyframes rotate {
+				from {
+					transform: rotateY(-10deg);
+					text-shadow:  1px -1px #CCC,
+												2px -1px #BBB,
+												3px -2px #AAA,
+												4px -2px #999,
+												5px -3px #888,
+												6px -3px #777;
+				}
+				to {
+					transform: rotateY(10deg);
+					text-shadow:  -1px -1px #CCC,
+												-2px -1px #BBB,
+												-3px -2px #AAA,
+												-4px -2px #999,
+												-5px -3px #888,
+												-6px -3px #777;
+				}
+			}
+			@keyframes skew {
+				from {
+					transform: scaleY(0.3) skewX(-15deg);
+				}
+				to {
+					transform: scaleY(0.3) skewX(-20deg);
+				}
+			}
+			#animEighteenCont{
+				display: none;
+				width: 100%;
+				height: 100%;
+			}
+			#halEmote{
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="reqBy">
+			<p id="name">From: <span id="from">abrownbag</span></p>
+		</div>
+
+		<div id="animOneCont">
+			<video class="share-video" id="abbIdle"><source id="webmSource" src="/abbIdle.webm" type="video/webm"></video>
+		</div>
+
+		<div id="animTwoCont" class="hide">
+			<video class="share-video" id="abbGangnamVideo"><source id="webmSource" src="/abbGangnam.webm" type="video/webm"></video>
+			<audio id="abbGangnamSource" preload="auto" >
+				<source src="/gangnam.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animThreeCont" class="hide">
+			<video class="share-video" id="abbFail"><source id="webmSource" src="/abbFail.webm" type="video/webm"></video>
+			<audio id="fail" preload="auto" >
+				<source src="/fail.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animFourCont" class="hide">
+			<video class="share-video" id="abbSpin"><source id="webmSource" src="/abbSpin.webm" type="video/webm"></video>
+			<audio id="wee" preload="auto" >
+				<source src="/wee.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animSixCont" class="hide">
+			<video class="share-video" id="abbFlip"><source id="webmSource" src="/abbFlip.webm" type="video/webm"></video>
+			<audio id="yahoo" preload="auto" >
+				<source src="/yahoo.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animNineCont" class="hide">
+			<video class="share-video" id="abbGuitar"><source id="webmSource" src="/abbGuitar.webm" type="video/webm"></video>
+			<audio id="guitar" preload="auto" >
+				<source src="/guitar.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animTenCont" class="hide">
+			<video class="share-video" id="abbFight"><source id="webmSource" src="/abbFight.webm" type="video/webm"></video>
+			<audio id="fight" preload="auto" >
+				<source src="/fight.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animElevenCont" class="hide">
+			<video class="share-video" id="abbTwerk"><source id="webmSource" src="/abbTwerk.webm" type="video/webm"></video>
+			<audio id="twerk" preload="auto" >
+				<source src="/twerk.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animTwelveCont" class="hide">
+			<video class="share-video" id="abbDab"><source id="webmSource" src="/abbDab.webm" type="video/webm"></video>
+			<audio id="dab" preload="auto" >
+				<source src="/dab.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animThirteenCont" class="hide">
+			<video class="share-video" id="abbHLB"><source id="webmSource" src="/abbHLB.webm" type="video/webm"></video>
+			<audio id="hlb" preload="auto" >
+				<source src="/hlb.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animFourteenCont" class="hide">
+			<video class="share-video" id="abbBang"><source id="webmSource" src="/abbBang.webm" type="video/webm"></video>
+			<audio id="headbang" preload="auto" >
+				<source src="/headbang.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+
+		<div id="animFiveCont" class="hide">
+			<video class="share-video" id="introVidSource" poster="https://thumbs.gfycat.com/UnripeFavorableHorseshoecrab-poster.jpg" ><source id="webmSource" src="https://fat.gfycat.com/UnripeFavorableHorseshoecrab.webm" type="video/webm"><source id="mp4Source" src="https://giant.gfycat.com/UnripeFavorableHorseshoecrab.mp4" type="video/mp4">
+					Sorry, your browser doesn't support HTML5 video.
+			</video>
+			<audio id="introVidSoundSounrce" preload="auto" >
+				<source src="/introVidAudio.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+			</audio>
+		</div>
+
+		<div id="animFifteenCont" class="hide">
+			<div id="cheesecake">
+				<div id="CakeCont">
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+				</div>
+				<div id="CakeCont">
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+				</div>
+				<div id="CakeCont">
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+				</div>
+				<div id="CakeCont">
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+				</div>
+				<div id="CakeCont">
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+					<img src="briCake.gif" class="image" />
+				</div>
+				<div id="DanceCont">
+					<img src="briDance.gif" class="image" />
+					<img src="briDance.gif" class="image" />
+					<img src="briDance.gif" class="image" />
+					<img src="briDance.gif" class="image" />
+					<img src="briDance.gif" class="image" />
+					<img src="briDance.gif" class="image" />
+				</div>
+			</div>
+			<audio id="briLove" preload="auto" >
+				<source src="/briLove.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+		<div id="animSixteenCont" class="hide">
+			<canvas id="canvasLightning" preload="auto"></canvas>
+			<div class="flux">BEASTMODE</div>
+			<audio id="voltage" preload="auto" >
+				<source src="/voltage.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+		<div id="animSeventeenCont" class="hide">
+			<div class="subBallsDrop">
+				<canvas id="subBalls" preload="auto"></canvas>
+				<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+					<defs>
+						<filter id="shadowed-goo">
+							<feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
+							<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+							<feGaussianBlur in="goo" stdDeviation="3" result="shadow" />
+							<feColorMatrix in="shadow" mode="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 -0.2" result="shadow" />
+							<feOffset in="shadow" dx="1" dy="1" result="shadow" />
+							<feBlend in2="shadow" in="goo" result="goo" />
+							<feBlend in2="goo" in="SourceGraphic" result="mix" />
+						</filter>
+						<filter id="goo">
+							<feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
+							<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+							<feBlend in2="goo" in="SourceGraphic" result="mix" />
+						</filter>
+					</defs>
+				</svg>
+			</div>
+			<div class="subName">
+				<h1>abrownbag just subscribed</h1>
+			</div>
+			<div class="subSpam" class="hide">
+				<h1>Spam</h1>
+				<h1>|x_O|</h1>
+				<h1>In The Chat</h1>
+			</div>
+			<audio id="subMix" preload="auto" >
+				<source src="/sub.mp3" type="audio/mpeg">
+			</audio>
+		</div>
+		<div id="animEighteenCont" class="hide">
+			<video class="share-video" id="halEmote"><source id="webmSource" src="/halEmote.webm" type="video/webm"></video>
+		</div>
+		<script src="/subBalls.js"></script>
+		<script src="/lightPoints.js"></script>
+		<script src="/sparks.js"></script>
+		<script>
+			var socket = io();
+			socket.on('animation', function(num, inQueue, from){
+				animate(num, inQueue, from);
+			});
+			var introVidSource = document.getElementById("introVidSource");
+			var abbIdle = document.getElementById("abbIdle");
+			var abbGangnamVideo = document.getElementById("abbGangnamVideo");
+			var introVidSoundSounrce = document.getElementById("introVidSoundSounrce");
+			var abbGangnamSource = document.getElementById("abbGangnamSource");
+			var abbFail = document.getElementById("abbFail");
+			var abbSpin = document.getElementById("abbSpin");
+			var abbFlip = document.getElementById("abbFlip");
+			var abbGuitar = document.getElementById("abbGuitar");
+			var abbFight = document.getElementById("abbFight");
+			var fail = document.getElementById("fail");
+			var yahoo = document.getElementById("yahoo");
+			var wee = document.getElementById("wee");
+			var fight = document.getElementById("fight");
+			var guitar = document.getElementById("guitar");
+			var twerk = document.getElementById("twerk");
+			var dab = document.getElementById("dab");
+			var hlb = document.getElementById("hlb");
+			var headbang = document.getElementById("headbang");
+			var briLove = document.getElementById("briLove");
+			var voltage = document.getElementById("voltage");
+			var subMix = document.getElementById("subMix");
+			var halEmote = document.getElementById("halEmote");
+			var queue = [];
+			var playing = false;
+			var shouldIdle = true;
+
+				// anim setup
+				$('#abbIdle').bind("ended", function() {
+					abbIdle.play()
+				});
+				abbIdle.play()
+
+				// animEnded
+				var fightSeq = 0;
+				$('#abbFight').bind("ended", function() {
+					if (fightSeq < 5) {
+						fightSeq++;
+						abbFight.play();
+					}else{
+						fightSeq = 0;
+						$('#animTenCont').hide();
+						animEnded();
+					}
+				});
+				var dabSeq = 0;
+				$('#abbDab').bind("ended", function() {
+					if (dabSeq < 2) {
+						dabSeq++;
+						abbDab.play();
+					}else{
+						dabSeq = 0;
+						$('#animTwelveCont').hide();
+						animEnded();
+					}
+				});
+				var bangSeq = 0;
+				$('#abbBang').bind("ended", function() {
+					if (bangSeq < 3) {
+						bangSeq++;
+						abbBang.play();
+					}else{
+						bangSeq = 0;
+						$('#animFourteenCont').hide();
+						animEnded();
+					}
+				});
+				// Music Ended
+				$('#subMix').bind("ended", function() {
+					$('#animSeventeenCont').hide();
+					$("#animSeventeenCont .subName").show();
+					$("#animSeventeenCont .subSpam").hide();
+					$("#animSeventeenCont .subBallsDrop").hide();
+					animEnded();
+				});
+				$('#voltage').bind("ended", function() {
+					$('#animSixteenCont').hide();
+					animEnded();
+				});
+				$('#briLove').bind("ended", function() {
+					$('#animFifteenCont').hide();
+					animEnded();
+				});
+				$('#abbHLB').bind("ended", function() {
+					$('#animThirteenCont').hide();
+					animEnded();
+				});
+				$('#abbGangnamVideo').bind("ended", function() {
+					$('#animTwoCont').hide();
+					animEnded();
+				});
+				$('#abbFail').bind("ended", function() {
+					$('#animThreeCont').hide();
+					animEnded();
+				});
+				$('#abbGuitar').bind("ended", function() {
+					$('#animNineCont').hide();
+					animEnded();
+				});
+				$('#abbSpin').bind("ended", function() {
+					$('#animFourCont').hide();
+					animEnded();
+				});
+				$('#abbFlip').bind("ended", function() {
+					$('#animSixCont').hide();
+					animEnded();
+				});
+				$('#abbTwerk').bind("ended", function() {
+					$('#animElevenCont').hide();
+					animEnded();
+				});
+				$('#introVidSource').bind("ended", function() {
+					$('#animFiveCont').hide();
+					animEnded();
+				});
+				$('#halEmote').bind("ended", function() {
+					$('#animEighteenCont').hide();
+					animEnded();
+				});
+
+			var hideIdle = function(){
+				$('#animOneCont').hide();
+			}
+			var showIdle = function(){
+				$('#animOneCont').show();
+			}
+			var checkIdle = function(){
+				if(shouldIdle){
+					showIdle();
+				}
+			}
+
+			var animEnded = function(){
+				$('#reqBy').hide();
+				if(queue.length > 0){
+					var req = queue.splice(0,1);
+					animate(req[0][0], true, req[0][1]);
+				}else{
+					playing = false;
+					checkIdle();
+				}
+			}
+
+
+			var animate = function(num, inQueue, from){
+				if(!playing || inQueue){
+					playing = true;
+					hideIdle()
+					$('#from').text(from);
+					$('#reqBy').show();
+
+					if(num == 1) {
+						// fightsong?
+					}else if(num == 2){
+
+						abbGangnamVideo.play();
+						abbGangnamSource.volume = 0.33;
+						abbGangnamSource.play();
+						$('#animTwoCont').show();
+
+					}else if(num == 3){
+
+						abbFail.play();
+						fail.volume = 0.33;
+						fail.play();
+						$('#animThreeCont').show();
+
+					}else if(num == 4){
+
+						abbSpin.play();
+						wee.volume = 0.33;
+						wee.play();
+						$('#animFourCont').show();
+
+					}else if(num == 5){
+
+						introVidSource.play()
+						introVidSoundSounrce.volume = 0.33;
+						introVidSoundSounrce.play()
+						$('#animFiveCont').show();
+
+					}else if(num == 6){
+
+						abbFlip.play();
+						yahoo.volume = 0.33;
+						yahoo.play();
+						$('#animSixCont').show();
+
+					}else if(num == 7){
+						shouldIdle = false;
+						animEnded();
+					}else if(num == 8){
+						shouldIdle = true
+						animEnded();
+					}else if(num == 9){
+
+						abbGuitar.play();
+						guitar.volume = 0.33;
+						guitar.play();
+						$('#animNineCont').show();
+
+					}else if(num == 10){
+
+						abbFight.play();
+						fight.volume = 0.33;
+						fight.play();
+						$('#animTenCont').show();
+
+					}else if(num == 11){
+
+						abbTwerk.play();
+						twerk.volume = 0.33;
+						twerk.play();
+						$('#animElevenCont').show();
+
+					}else if(num == 12){
+
+						abbDab.play();
+						dab.volume = 0.25;
+						dab.play();
+						$('#animTwelveCont').show();
+
+					}else if(num == 13){
+
+						abbHLB.play();
+						hlb.volume = 0.33;
+						hlb.play();
+						$('#animThirteenCont').show();
+
+					}else if(num == 14){
+
+						abbBang.play();
+						headbang.volume = 0.33;
+						headbang.play();
+						$('#animFourteenCont').show();
+
+					}else if(num == 15){
+
+						briLove.volume = 0.33;
+						briLove.play();
+						$('#animFifteenCont').show();
+
+					}else if(num == 16){
+
+						voltage.volume = 0.33;
+						voltage.play();
+						setTimeout(function(){
+							$("#animSixteenCont").show()
+						}, 3100);
+					}else if(num == 17){
+						subMix.volume = 0.75;
+						subMix.play();
+						$("#animSeventeenCont .subName h1").text(from + " Grabbed The Booty");
+						setTimeout(function(){
+							$("#animSeventeenCont").show();
+						}, 5000);
+						setTimeout(function(){
+							$("#animSeventeenCont .subBallsDrop").show();
+						}, 9450);
+						setTimeout(function(){
+							$("#animSeventeenCont .subName").hide();
+							$("#animSeventeenCont .subSpam").show();
+						}, 18300);
+					}else if(num == 18){
+
+						halEmote.volume = 0.33;
+						halEmote.play();
+						$('#animEighteenCont').show();
+					}else{
+						console.log("num:", num);
+						console.log('not an animation number?');
+						animEnded();
+					}
+				}else{
+					queue.push([num, from])
+				}
+			}
+			animate(16, false, "VoltageLoader");
+		</script>
+	</body>
+</html>
