@@ -7,8 +7,6 @@ io.on('connection', function(socket){
 	console.log('BrowserSource Online')
 });
 
-http.listen(3002, function(){
+http.listen((process.env.PORT || 3200), function(){
 	console.log('listening on *:3002');
 });
-
-// change for name or shit
