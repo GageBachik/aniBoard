@@ -430,6 +430,7 @@
 				console.log('Client Online')
 			});
 			socket.on('animation', function(num, inQueue, from){
+				console.log('animation', num, 'ran');
 				animate(num, inQueue, from);
 			});
 			var introVidSource = document.getElementById("introVidSource");
