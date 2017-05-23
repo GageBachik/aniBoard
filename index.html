@@ -423,6 +423,9 @@
 		<script src="/sparks.js"></script>
 		<script>
 			var socket = io();
+			socket.on('error', function(err){
+				console.log("err:", err);
+			});
 			socket.on('connection', function(socket){
 				console.log('Client Online')
 			});
